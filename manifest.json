@@ -1,0 +1,15 @@
+{
+    "id": "18e4d168-6518-4e60-a1df-b08955e34584",
+    "version": "1.0.0",
+    "platform": "all",
+    "arch": "all",
+    "name": "Selected Images to Documents",
+    "logo": "/logo.png",
+    "keywords": [],
+    "devTools": false,
+    "main": {
+        "url": "index.html",
+        "width": 640,
+        "height": 480
+    }
+}

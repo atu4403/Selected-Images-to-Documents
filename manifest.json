@@ -6,10 +6,10 @@
     "name": "Selected Images to Documents",
     "logo": "/logo.png",
     "keywords": [],
-    "devTools": false,
+    "devTools": true,
     "main": {
         "url": "index.html",
-        "width": 640,
-        "height": 480
+        "width": 1280,
+        "height": 960
     }
 }

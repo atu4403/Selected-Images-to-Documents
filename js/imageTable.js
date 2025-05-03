@@ -10,7 +10,12 @@ function generateImageUrl(item) {
   if (!item || !item.id || !item.name || !item.ext) {
     return '';
   }
-
+  console.log(`name: ${item.name}`)
+  console.log(`width: ${item.width}`)
+  console.log(`height: ${item.height}`)
+  console.log(`url: ${item.url}`)
+  console.log(`annotation: ${item.annotation}`)
+  console.log(`tags: ${item.tags}`)
   // URLを構築: http://localhost:8593/[アイテムID].info/[ファイル名].[拡張子]
   return `http://localhost:8593/${item.id}.info/${item.name}.${item.ext}`;
 }

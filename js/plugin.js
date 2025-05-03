@@ -101,6 +101,7 @@ eagle.onPluginCreate(async (plugin) => {
 
     return markdown;
   }
+
   // マークダウン生成ボタンのイベントリスナー
   document.getElementById('generateMarkdownBtn').addEventListener('click', async () => {
     try {
@@ -130,6 +131,26 @@ eagle.onPluginCreate(async (plugin) => {
       // クリップボードにコピー
       if (modules.clipboard.setClipboardText) {
         await modules.clipboard.setClipboardText(markdown);
+
+        // 追加: 選択されたアイテムのannotationとtagsを更新
+        for (const item of selectedItems) {
+          // annotationが空の場合、titleとpromptを設定
+          if (!item.annotation) {
+            item.annotation = `${title}\n${prompt}`;
+          }
+
+          // tagsに'prompt'が存在しない場合、追加
+          if (!item.tags || !item.tags.includes('prompt')) {
+            // tagsが未定義の場合は新しい配列を作成
+            item.tags = item.tags || [];
+            // 'prompt'タグを追加
+            item.tags.push('prompt');
+          }
+
+          // 変更を保存
+          await item.save(item);
+        }
+
         alert('マークダウンをクリップボードにコピーしました');
       } else {
         // clipboardモジュールが完全でない場合の対応
@@ -148,7 +169,6 @@ eagle.onPluginCreate(async (plugin) => {
     }
   });
 
-  // クリップボードボタンのイベントリスナー
   // クリップボードボタンのイベントリスナー
   document.getElementById('getClipboardBtn').addEventListener('click', async () => {
     try {

@@ -27,7 +27,7 @@ function getClipboardImage() {
     try {
       const { clipboard } = require('electron');
       const image = clipboard.readImage();
-      
+
       if (image.isEmpty()) {
         resolve(null);
       } else {
@@ -41,8 +41,26 @@ function getClipboardImage() {
   });
 }
 
-// モジュールのエクスポート（CommonJSスタイル）
+/**
+ * テキストをクリップボードにコピーする
+ * @param {string} text - コピーするテキスト
+ * @returns {Promise<void>}
+ */
+function setClipboardText(text) {
+  return new Promise((resolve, reject) => {
+    try {
+      const { clipboard } = require('electron');
+      clipboard.writeText(text);
+      resolve();
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+// モジュールのエクスポートに追加
 module.exports = {
   getClipboardText,
-  getClipboardImage
+  getClipboardImage,
+  setClipboardText
 };

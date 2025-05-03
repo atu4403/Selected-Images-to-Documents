@@ -29,7 +29,7 @@ function loadModule(plugin, relativePath, moduleName) {
   }
 }
 
-eagle.onPluginCreate((plugin) => {
+eagle.onPluginCreate(async (plugin) => {
   console.log('Plugin path:', plugin.path);
 
   // 複数のモジュールを読み込む
@@ -43,28 +43,16 @@ eagle.onPluginCreate((plugin) => {
   // HTMLコンテンツを追加
   document.querySelector('#message').innerHTML = `
   <ul>
-    <li>id: ${plugin.manifest.id}</li>
-    <li>version: ${plugin.manifest.version}</li>
-    <li>name: ${plugin.manifest.name}</li>
-    <li>logo: ${plugin.manifest.logo}</li>
+    <li>${plugin.manifest.name}</li>
     <li>path: ${plugin.path}</li>
   </ul>
   
   <div class="section">
-    <button id="getClipboardBtn">クリップボードのテキストを取得</button>
-    <div id="clipboardContent" class="content-box"></div>
+    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+      <button id="getClipboardBtn">クリップボードのテキストを取得</button>
+      <button id="generateMarkdownBtn">マークダウンを生成してコピー</button>
+    </div>
   </div>
-  
-  <div class="section">
-    <button id="showSelectedBtn">選択されたアイテム情報を表示</button>
-    <div id="selectedItemsContainer" class="content-box"></div>
-  </div>
-  
-  <div class="section">
-    <button id="createImageTableBtn">選択した画像からテーブルを作成</button>
-    <div id="imageTableContainer" class="content-box"></div>
-  </div>
-  
   <div class="section">
     <h3>AI画像ドキュメント生成</h3>
     <div>
@@ -75,10 +63,19 @@ eagle.onPluginCreate((plugin) => {
       <label for="promptInput">プロンプト:</label>
       <textarea id="promptInput" style="width: 100%; height: 150px; margin-bottom: 10px;"></textarea>
     </div>
-    <button id="generateMarkdownBtn">マークダウンを生成してコピー</button>
+  </div>
+
+  <div class="section">
+    <button id="showSelectedBtn">選択されたアイテム情報を表示</button>
+    <div id="selectedItemsContainer" class="content-box"></div>
+  </div>
+  <br>
+  
+  <div class="section">
+    <button id="createImageTableBtn">選択した画像からテーブルを作成</button>
+    <div id="imageTableContainer" class="content-box"></div>
   </div>
 `;
-
   /**
    * HTML表とプロンプトからマークダウンを生成する
    * @param {string} title - タイトル
@@ -152,6 +149,7 @@ eagle.onPluginCreate((plugin) => {
   });
 
   // クリップボードボタンのイベントリスナー
+  // クリップボードボタンのイベントリスナー
   document.getElementById('getClipboardBtn').addEventListener('click', async () => {
     try {
       if (!modules.clipboard) {
@@ -159,8 +157,12 @@ eagle.onPluginCreate((plugin) => {
       }
 
       const text = await modules.clipboard.getClipboardText();
-      document.getElementById('clipboardContent').textContent =
-        text || 'クリップボードにテキストがありません';
+
+      // クリップボードの内容をプロンプト入力欄に設定
+      const promptInput = document.getElementById('promptInput');
+      if (promptInput) {
+        promptInput.value = text || '';
+      }
     } catch (error) {
       console.error('クリップボードからのテキスト取得に失敗:', error);
       document.getElementById('clipboardContent').textContent =
@@ -199,6 +201,7 @@ eagle.onPluginCreate((plugin) => {
         `<p>エラーが発生しました: ${error.message}</p>`;
     }
   });
+
 });
 
 eagle.onPluginRun(() => {
